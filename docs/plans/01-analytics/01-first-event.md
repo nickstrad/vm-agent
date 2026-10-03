@@ -1,6 +1,6 @@
 # 01 First event
 
-Part of [plan 01](index.md). Roadmap items 1 and 2. **Stage:** prototype built, awaiting signoff. Everything below is planned.
+Part of [plan 01](index.md). Roadmap items 1 and 2. **Stage:** prototype definition proposed. Everything below is planned.
 
 ## Outcome
 
@@ -51,7 +51,9 @@ Owner documents created: `invariants.md` in `event`, `wire`, `store`, `collector
 
 ## Prototype and signoff
 
-Covered by [the prototype](../../../prototypes/01-analytics/README.md), steps 1, 3, and 8. What SQLite could not show, and this file must verify against DuckDB:
+The [prototype definition](index.md#prototype-definition) proposes prototype A, shared with file 02, for S1–S4 and S7. It is not agreed or built.
+
+Whatever is agreed, a SQLite stand-in cannot show the following, so this file verifies them against DuckDB:
 
 - A second process opening the same database file is refused while the collector holds it.
 - The driver builds with cgo on the Mac, and which build tags it needs.

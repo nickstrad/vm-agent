@@ -1,6 +1,6 @@
 # 04 Retention, limits, and failure isolation
 
-Part of [plan 01](index.md). Roadmap item 5. **Stage:** prototype built for the collector-down case only, awaiting signoff. Everything below is planned.
+Part of [plan 01](index.md). Roadmap item 5. **Stage:** no prototype proposed. Everything below is planned.
 Depends on [02](02-emitter-delivery.md) and [03](03-helper-cli-queries.md). 05a may run concurrently.
 
 ## Outcome
@@ -60,7 +60,7 @@ No deterministic simulation and no virtual time. Timers are kept out of the deci
 
 ## Prototype and signoff
 
-[The prototype](../../../prototypes/01-analytics/README.md) step 7 shows only the caller surviving a stopped collector. Retention, the degraded state, and query limits have no prototype; extend it before signoff if the user wants to judge those first. Record that choice in the index.
+The [prototype definition](index.md#prototype-definition) proposes none for this file: its decisions are small and stated in full as tables D8 and D9. If the user wants to see the degraded state or retention running before signoff, add that to the definition first.
 
 ## Observability
 

@@ -209,7 +209,7 @@ DuckDB needs cgo. The build tags and toolchain notes are settled in [01](01-firs
 
 ## Acceptance walkthrough
 
-Each plan file ends with a short scripted run of the real binaries on the Mac, and its transcript is pasted into the plan file as evidence. It is a demonstration of the CLI outcome, not a test suite, and it takes over from the prototype's `demo` command as the thing to run once the robust code exists.
+Each plan file ends with a short scripted run of the real binaries on the Mac, and its transcript is pasted into the plan file as evidence. It is a demonstration of the CLI outcome, not a test suite.
 
 ## What this does not establish
 

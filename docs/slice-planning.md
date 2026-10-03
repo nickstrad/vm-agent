@@ -2,7 +2,7 @@
 
 The [roadmap](roadmap.md) orders the platform's capabilities. Before implementing a slice, write a plan folder under [`docs/plans/`](plans/AGENTS.md) and link its index from [index.md](index.md).
 A plan is a folder of one or more plan files. Its index states their order and which may run concurrently; its `architecture.md` and `testing.md` carry the shared contracts and testing approach. The [plans guide](plans/AGENTS.md#plan-file-contents) maps the brief below onto those files.
-Planning and implementation are separate tasks. A request to plan produces a reviewable plan and, where the approach needs judging, a [SQLite prototype](../prototypes/AGENTS.md) the user can run. Robust implementation begins after the user signs off and instructs an agent to implement a plan file.
+Planning and implementation are separate tasks. A request to plan produces a reviewable plan, including a proposed [prototype definition](plans/AGENTS.md#define-the-prototype-first) for discussion. It does not produce prototype code. Robust implementation begins after the user signs off and instructs an agent to implement a plan file.
 
 Start with the first analytics slice on Mac, aiming for one emitted event that the analytics helper CLI can retrieve. Identify its local build prerequisites and later Linux deployment checks in the brief. Broader query features can follow in later slices if needed to keep this outcome bounded.
 
@@ -18,9 +18,9 @@ Start with the first analytics slice on Mac, aiming for one emitted event that t
 8. **Ordered implementation steps:** Give a short dependency-ordered list of concrete changes and their checks, keeping each step within this slice.
 9. **Acceptance and budgets:** State the evidence required for completion, ordinary-test commands once available, discovery limits, VM costs, and any permitted live-service spend.
 10. **Decisions and status:** Resolve routine design choices with reasons; clearly list remaining blockers, assumptions, and planned versus verified behavior.
-11. **Prototype and signoff:** Name the prototype, the questions the user must answer after running it, what the SQLite stand-in cannot show, and the recorded signoff.
+11. **Prototype and signoff:** Propose whether the work needs one prototype, one per plan file, several working together, or none, and define each; list the questions the user must answer, what a stand-in cannot show, and the recorded agreement and signoff.
 
 ## After implementation
 
 Update the plan with actual verification evidence and meaningful scope changes. Update owned invariants, relevant docs, and the README configuration reference together with behavior.
-Follow the project knowledge skill to save durable environment/tooling findings and engineering boundaries in the repo-local store, linking canonical plans and recording verification limits. Mark the prototype's README superseded rather than deleting it. Mark the slice complete only when its acceptance criteria are satisfied, and plan the next slice using what the completed work established.
+Follow the project knowledge skill to save durable environment/tooling findings and engineering boundaries in the repo-local store, linking canonical plans and recording verification limits. Mark any prototype's README superseded rather than deleting it. Mark the slice complete only when its acceptance criteria are satisfied, and plan the next slice using what the completed work established.

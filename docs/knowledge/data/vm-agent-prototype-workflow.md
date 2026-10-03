@@ -1,40 +1,33 @@
 ---
-title: Prototype workflow and tooling for vm-agent plans
-summary: Plans go prototype → signoff → generalize → robust; prototypes are standalone Go/Deno folders with SQLite under prototypes/, run with `go -C prototypes/<name> run . demo`, and are kept as reference.
-tags: [prototypes, planning, sqlite, tooling, macos]
+title: Prototype protocol for vm-agent plans
+summary: Define the prototype in the plan and get the user's agreement before building anything; shape may be one for the plan, one per plan file, several working together, or none.
+tags: [prototypes, planning, sqlite, tooling]
 updated: 2026-10-03
-verified: 2026-10-03 — macOS darwin/arm64, Go 1.26.4; `go vet .` and `go run . demo` in prototypes/scaffold and prototypes/01-analytics.
 ---
 
-# Prototype workflow and tooling for vm-agent plans
+# Prototype protocol for vm-agent plans
 
-Every plan file under `docs/plans/` moves through four stages: a SQLite prototype the user can run, recorded signoff of the plan's questions, a generalize step that moves reusable tooling into `prototypes/scaffold/`, and only then the robust implementation with full fuzzing and MC/DC evidence. A passing demo is never acceptance evidence.
+What a prototype needs differs for each part of a plan. A plan's `index.md` therefore carries a prototype definition that the user agrees to before any prototype code exists. Building a prototype, a scaffold, or shared tooling ahead of that discussion is out of protocol.
 
 ## How to act on it
 
-- Start a prototype by copying the scaffold; each prototype has its own `go.mod` and imports nothing from other prototypes or the platform. Share code by copying, so folders stay standalone and can be kept as reference after the robust code exists.
-- Write prototypes and demo drivers in Go or Deno; use Bash only for small glue. Use SQLite for storage whatever the production store will be, and state in the README what the stand-in cannot show.
-- Run a demo from the repository root:
+- Propose a shape with reasons: one prototype for the whole plan, one per plan file, several prototypes working together, or none because the change is scoped enough to judge from the plan. A plan may mix them.
+- For each proposed prototype state its question, what it includes and leaves out, language, storage, what the user will judge, and what it cannot show.
+- Build only what the user agreed to. Record the agreement and date in the plan index.
+- Agreed prototypes are standalone folders under `prototypes/`, written in Go or Deno (Bash for simple glue), using SQLite unless the question is about the production store itself. They are kept as reference after the robust code exists.
+- Propose extracting shared prototype tooling only after real prototypes show what repeats, and extract only with the user's agreement.
+- A prototype demo is never acceptance evidence. Robust work starts after recorded signoff.
 
-```bash
-go -C prototypes/scaffold run . demo
-go -C prototypes/01-analytics run . demo
-KEEP=1 go -C prototypes/01-analytics run . demo   # keep the temporary working directory
-```
+## Seen in
 
-## Tooling facts
-
-- `demokit.go` re-executes the prototype's own binary via `os.Executable()`, so `go run . demo` needs no separate build step.
-- Demo working directories are created directly under `/tmp`, not under `$TMPDIR`: macOS limits Unix socket paths to about 104 bytes and `$TMPDIR` paths under `/var/folders/...` can exceed that once a socket name is appended.
-- SQLite prototypes use `github.com/mattn/go-sqlite3`, which needs cgo and a C compiler. It is the same driver version `tools/kb` already pulls into the module cache.
-- Deno 2.7.14 is installed on the Mac at `~/.deno/bin/deno`; no Deno prototype or shared Deno entry point exists yet.
+On 2026-10-03 an analytics prototype and a scaffold were built before the approach was discussed; the user had them removed and asked for this protocol. Commit `ab6b1c9` holds the removed code if it is ever useful as reference.
 
 ## Limits
 
-Verified on macOS only. No prototype has been run on the Linux VM. A SQLite prototype says nothing about DuckDB's single-process ownership, appender, or read-only statement detection; plan 01 verifies those in its robust stage.
+This is a workflow contract, not a verified tooling fact. No prototype currently exists in the repository.
 
 ## Canonical contracts
 
 - [Plans guide](../../plans/AGENTS.md).
 - [Prototypes guide](../../../prototypes/AGENTS.md).
-- [Plan 01 analytics](../../plans/01-analytics/index.md).
+- [Plan 01 analytics prototype definition](../../plans/01-analytics/index.md).

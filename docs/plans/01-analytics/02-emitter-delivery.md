@@ -1,6 +1,6 @@
 # 02 Emitter and delivery
 
-Part of [plan 01](index.md). Roadmap item 3. **Stage:** prototype built, awaiting signoff. Everything below is planned.
+Part of [plan 01](index.md). Roadmap item 3. **Stage:** prototype definition proposed. Everything below is planned.
 Depends on [01](01-first-event.md). May run concurrently with [03](03-helper-cli-queries.md) and 05a as **lane A**; see [the concurrency rules](index.md#concurrency-rules).
 
 ## Outcome
@@ -54,11 +54,13 @@ No deterministic simulation. The roadmap's earlier "delivery simulation" for buf
 
 ## Prototype and signoff
 
-Covered by [the prototype](../../../prototypes/01-analytics/README.md), steps 2, 5, and 6, for signoff questions S4 and S5. Not shown there, and verified here:
+The [prototype definition](index.md#prototype-definition) proposes prototype A, shared with file 01, for S4 and S5. It is not agreed or built.
 
-- The producer-side queue: the prototype's `emit` is a one-shot command.
-- Unacknowledged `emit` frames: the prototype replies to each one.
-- Batch writes: the prototype inserts one row at a time.
+As proposed, prototype A leaves these out, so this file verifies them directly:
+
+- The producer-side queue.
+- Unacknowledged `emit` frames.
+- Batch writes.
 
 ## Observability
 

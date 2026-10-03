@@ -3,7 +3,7 @@
 `docs/plans/` holds the implementation plans for roadmap work. One folder plans one [roadmap](../roadmap.md) section.
 A plan is documentation. Writing one does not authorize implementation; wait for the user to say which plan file to execute.
 
-Follow the root and [docs](../AGENTS.md) agent guides, [slice planning](../slice-planning.md), [testing](../testing.md), and [coding style](../coding-style.md). This guide adds the folder layout, the prototype stages, and the testing emphasis.
+Follow the root and [docs](../AGENTS.md) agent guides, [slice planning](../slice-planning.md), [testing](../testing.md), and [coding style](../coding-style.md). This guide adds the folder layout, the prototype protocol, and the testing emphasis.
 
 ## Layout
 
@@ -11,12 +11,12 @@ Follow the root and [docs](../AGENTS.md) agent guides, [slice planning](../slice
 docs/plans/
   AGENTS.md                  this guide (CLAUDE.md is a relative symlink to it)
   NN-<roadmap-section>/      one plan; NN follows roadmap order
-    index.md                 required: outcome, order, concurrency, status, decisions, budgets
+    index.md                 required: outcome, order, concurrency, prototype definition, decisions, budgets
     architecture.md          normal: modules and diagrams before/after, one change diagram per plan file
     testing.md               normal: the plan's testing approach, targets, tables, oracles, limits
     01-<cli-outcome>.md      1..n plan files, each one working CLI outcome
     02-<cli-outcome>.md
-prototypes/NN-<roadmap-section>/   standalone prototype for that plan (outside docs/, kept as reference)
+prototypes/                 agreed prototypes only (outside docs/, kept as reference)
 ```
 
 - A plan has between 1 and n plan files. Split when a section holds more than one CLI outcome or when parts can proceed concurrently. A one-file plan may fold `architecture.md` and `testing.md` into that file as sections with the same headings.
@@ -31,8 +31,9 @@ The index is the first file an agent reads and the only place that states execut
 2. **Plan files** in a table: file, CLI outcome, depends on, may run concurrently with, stage, and status.
 3. **Order diagram** in text art showing dependencies, concurrent lanes, and signoff gates.
 4. **Concurrency rules:** for each concurrent group, the packages or files each lane owns and the shared contracts that are frozen while lanes run. Two plan files may run concurrently only when they own disjoint source and share only contracts that are already signed off. A lane that needs a shared contract changed stops and updates `architecture.md` first.
-5. **Signoff questions and decisions:** settled contracts with reasons, and open decisions the user must answer. Keep the two visibly separate.
-6. **Budgets and acceptance** for the plan: fuzz discovery limits, VM cost, live-service spend, and the evidence that completes the plan.
+5. **Prototype definition:** the proposed shape and what each prototype is, as [below](#define-the-prototype-first), with the user's recorded answer.
+6. **Signoff questions and decisions:** settled contracts with reasons, and open decisions the user must answer. Keep the two visibly separate.
+7. **Budgets and acceptance** for the plan: fuzz discovery limits, VM cost, live-service spend, and the evidence that completes the plan.
 
 Update the status column when a stage changes. Record signoff with its date and who gave it.
 
@@ -72,39 +73,48 @@ The exemption is narrow:
 - Stateful analytics behavior (queues, flush barriers, sessions) is fuzzed as operation sequences against a simple model oracle, asserting properties that hold under any interleaving.
 - Other modules' suites still check that their business results and control traces are identical with analytics enabled and disabled. That check belongs to those modules, not to the analytics plan.
 
-## Prototype, signoff, generalize, robust
+## Define the prototype first
 
-Every plan file moves through four stages. The index records the current stage.
+What it takes to prototype differs for each part of a plan. Decide that in the plan, with the user, before anything is built. Do not build a prototype, a scaffold, or shared tooling ahead of that agreement.
 
 ```text
-prototype  ---->  signoff  ---->  generalize  ---->  robust
-SQLite, Go or     user runs the   move reusable      production store and contracts,
-Deno, one demo    demo, answers   tools and scripts  full fuzzing and MC/DC, invariants,
-command           the signoff     into the           analytics events, acceptance
-                  questions       prototype scaffold evidence
+define prototype  ---->  user agrees  ---->  build what   ---->  signoff  ---->  robust
+in index.md              or changes it       was agreed          of the plan
+(shape + reasons)        (recorded)          (or nothing)        questions
 ```
 
-**Prototype.** Build the smallest runnable thing that lets the user judge the approach: the CLI outcome, the contract shapes, and the failure behavior. Follow [the prototypes guide](../../prototypes/AGENTS.md).
+**Define.** The plan's `index.md` carries a **Prototype definition** section that proposes one of these shapes and gives the reason:
 
-- Each prototype is a standalone folder under `prototypes/<plan-folder>/`, started from `prototypes/scaffold/`, with its own module, a `demo` command, and a README stating what it shows and what it does not.
-- Write it in Go or Deno. Use Bash only for small glue.
-- Use SQLite for prototype storage, whatever the production store will be. It is one file, needs no service, and the user can inspect it with `sqlite3`.
-- Skip fuzz targets, MC/DC tables, and invariant documents. Do keep the trust boundaries honest: a prototype that fakes authentication or redaction proves nothing about the approach.
-- One prototype may cover several plan files. A plan file that adds no new approach question, such as a deployment step, states "no prototype" with the reason.
-- Run the demo and record the date and environment in the prototype README.
+| Shape | Use when |
+| --- | --- |
+| One prototype for the whole plan | The plan files share one approach question, or the parts only make sense seen together. |
+| One prototype per plan file | The files raise separate questions that can be judged separately. |
+| Several prototypes working together | The question is about how independent parts interact, such as two processes and a protocol between them. |
+| No prototype | The change is scoped enough to judge from the plan, or adds no new approach question. State the reason. |
 
-**Signoff.** The user runs the demo and answers the plan's signoff questions. Record each answer in `index.md`. Changes the user asks for go into the plan and `architecture.md` before any robust code.
+A plan may mix them: one prototype for some files and none for others. For each proposed prototype state:
 
-**Generalize.** Review the signed-off prototype for tools, scripts, and patterns the next prototype would need, and move them into `prototypes/scaffold/` as the [generalize step](../../prototypes/AGENTS.md#generalize-step) describes. Record the result, including "nothing", in the prototype README.
+- the question it answers and the signoff questions it serves;
+- what it includes and what it leaves out;
+- language (Go or Deno) and storage (SQLite unless the question is about the production store itself);
+- how the user runs it and what they should look at;
+- what it cannot show, and where the robust stage verifies that instead.
+
+**Agree.** The user accepts, changes, or rejects the definition. Record the answer and date in the index. Until then the stage of every plan file is "prototype definition proposed".
+
+**Build.** Build exactly what was agreed, following [the prototypes guide](../../prototypes/AGENTS.md). Run it and record the date and environment in its README. Where the agreed answer is "no prototype", skip this stage.
+
+**Signoff.** The user runs any prototype and answers the plan's signoff questions; questions that need no prototype are answered from the plan. Record each answer in `index.md`. Changes the user asks for go into the plan and `architecture.md` before any robust code.
 
 **Robust.** Then implement the plan file to full standard under the production module.
 
-- Write new code against the signed-off contracts. Do not copy prototype code into production; the prototype is a reference for behavior, not a starting point for source.
-- Use the production store and adapters, and verify whatever the SQLite stand-in could not show. The plan names those gaps.
+- Write new code against the signed-off contracts. Do not copy prototype code into production; a prototype is a reference for behavior, not a starting point for source.
+- Use the production store and adapters, and verify whatever a stand-in could not show. The plan names those gaps.
 - Deliver the complete testing design, the owner `invariants.md` or `architecture.md` documents, observable events, and acceptance evidence.
-- Keep the prototype. When the plan completes, mark its README superseded with a link to the robust code, so it stays a reference for that aspect of the platform.
+- Keep any prototype. When the plan completes, mark its README superseded with a link to the robust code.
 
 Do not treat a prototype's demo as acceptance evidence, and do not start the robust stage on a plan file whose signoff is not recorded.
+Extracting shared prototype tooling is a separate, later proposal to the user; see [the prototypes guide](../../prototypes/AGENTS.md#generalizing-shared-tooling).
 
 ## Plan file contents
 
@@ -118,7 +128,7 @@ Each plan file is a bounded brief for one CLI outcome. Together with the plan's 
 | Testing design, deterministic boundary | `testing.md`; each plan file lists its targets and tables. |
 | Native and E2E evidence | Each plan file, with Mac checks and Linux checks named separately. |
 | Observability | Each plan file. |
-| Prototype and signoff | Each plan file; status in `index.md`. |
+| Prototype and signoff | Definition and recorded answers in `index.md`; each plan file names what the robust stage must verify beyond it. |
 | Ordered implementation steps | Each plan file. |
 | Acceptance and budgets | Each plan file; plan-wide budgets in `index.md`. |
 | Decisions and status | `index.md`. |

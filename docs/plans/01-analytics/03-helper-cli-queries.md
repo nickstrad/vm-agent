@@ -1,6 +1,6 @@
 # 03 Helper CLI queries
 
-Part of [plan 01](index.md). Roadmap item 4. **Stage:** prototype built for `task` and `query`, awaiting signoff. Everything below is planned.
+Part of [plan 01](index.md). Roadmap item 4. **Stage:** prototype definition proposed. Everything below is planned.
 Depends on [01](01-first-event.md). May run concurrently with [02](02-emitter-delivery.md) and 05a as **lane B**; see [the concurrency rules](index.md#concurrency-rules).
 
 ## Outcome
@@ -61,7 +61,9 @@ No deterministic simulation. `FuzzAdHocAdmit` is the security-relevant target: i
 
 ## Prototype and signoff
 
-Covered by [the prototype](../../../prototypes/01-analytics/README.md), steps 4 and 5, for S2 and S6. The prototype guards `query` with a read-only SQLite handle, which DuckDB cannot provide alongside a writer in the same way. Verified here instead: statement-type admission, export, `modules`, and `seed`.
+The [prototype definition](index.md#prototype-definition) proposes prototype B, a DuckDB spike that answers O1 and S6. It is not agreed or built. If it is agreed, it replaces step 1 below and its result is recorded in the index before the rest of this file starts.
+
+Named queries, result limits, and export need no prototype; they are judged from this plan.
 
 ## Observability
 

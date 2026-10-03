@@ -8,7 +8,6 @@ Everything here is planned. Paths, package names, commands, and schemas are prop
 repository
   docs/            roadmap, conventions, knowledge store
   tools/kb/        copied knowledge CLI (separate Go module)
-  prototypes/      scaffold + 01-analytics SQLite prototype (reference, not platform code)
 
 no platform Go module, no binaries, no analytics store, no events
 ```
@@ -109,7 +108,7 @@ client                               collector
   |<-----------------------------------|  result {columns, rows, truncated} | error {code}
 ```
 
-- `emit` has no reply, so a slow collector cannot slow a producer. The prototype replies to every emit; the robust version does not.
+- `emit` has no reply, so a slow collector cannot slow a producer.
 - `flush` is the barrier: its reply means every event this session sent before it is stored, dropped and counted, or rejected and counted.
 - Delivery is at most once. The emitter never retries, so the store needs no deduplication.
 - Error codes are a closed set: `unauthenticated`, `not_permitted`, `invalid_event`, `frame_too_large`, `unsupported_version`, `query_not_read_only`, `query_limit`, `store_unavailable`. Go callers get matching sentinel errors.

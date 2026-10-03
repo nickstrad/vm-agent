@@ -1,78 +1,36 @@
 # Agent guide for prototypes/
 
-`prototypes/` holds small runnable experiments that let the user judge an approach before robust work starts. Each prototype is a standalone folder that stays in the repository as reference for one aspect of the platform.
+`prototypes/` holds small runnable experiments that let the user judge an approach before robust work starts. It is empty until a plan's prototype definition is agreed.
 Prototypes are not platform code. Production code never imports them, and a passing demo is never acceptance evidence for a plan.
 
-Follow the root agent guide and [the plans guide](../docs/plans/AGENTS.md#prototype-signoff-generalize-robust), which defines when a prototype is built and signed off.
+Follow the root agent guide and [the plans guide](../docs/plans/AGENTS.md#define-the-prototype-first), which says how a prototype is defined, agreed, and signed off.
 
-## Layout
+## Discuss before building
 
-```text
-prototypes/
-  AGENTS.md            this guide (CLAUDE.md is a relative symlink to it)
-  scaffold/            copyable starting point; holds the canonical shared files
-  NN-<topic>/          one standalone prototype; NN matches its plan folder when it has one
-    README.md          what it shows, what it does not, how to run, verification date
-    go.mod             its own module
-    main.go, demo.go   subcommands and the `demo` walkthrough
-    demokit.go         copied from scaffold/
-```
+Do not create a prototype, a scaffold, or shared prototype tooling on your own initiative. What a prototype needs differs for each part of a plan, so the plan defines it first and the user agrees to it.
 
-## Rules
+1. The plan's `index.md` proposes a prototype definition: the shape, and for each prototype its question, scope, language, storage, and what the user will judge.
+2. The user agrees, changes, or rejects the definition. Record the answer and date in the index.
+3. Only then build what was agreed, and nothing beyond it.
 
-- **Standalone.** A prototype folder builds and runs alone, with its own `go.mod` or Deno entry point. It imports nothing from another prototype, from `scaffold/`, or from the platform module. Share code by copying it.
-- **Kept.** Do not delete a prototype when its plan completes. Mark it superseded in its README, with a link to the robust code, so it remains a readable reference for that approach.
-- **Go or Deno for scripting.** Write prototype programs and their demo drivers in Go, or in Deno TypeScript when that is the shorter path. Use Bash only for glue that would be awkward otherwise, and keep it small.
-- **SQLite for storage.** Use SQLite whatever the production store will be: one file, no service, and the user can open it with `sqlite3`. State in the README what the stand-in cannot show.
-- **One command to judge it.** `go -C prototypes/NN-<topic> run . demo` (or `deno run` with explicit permissions) walks through numbered steps, prints each command before its output, shows failure paths as well as the happy path, and cleans up after itself. `KEEP=1` keeps the working directory.
-- **Honest boundaries.** Keep authentication, redaction, and ownership real enough to judge. Leave out tests, invariant documents, and polish.
-- **No secrets, no databases, no build output in Git.** Demos write to a temporary directory.
-- **Record verification.** After running the demo, add the date and environment to the README. Do not claim an environment that was not run.
+## Rules for an agreed prototype
 
-## Start a prototype
+- **Standalone.** Each prototype is its own folder, `prototypes/<plan-folder>-<topic>/`, that builds and runs alone. It imports nothing from another prototype or from the platform module. Prototypes that work together do so by running side by side, as their definition describes.
+- **Kept.** Do not delete a prototype when its plan completes. Mark its README superseded, with a link to the robust code, so it stays a reference for that aspect of the platform.
+- **Go or Deno.** Write prototype programs and their drivers in Go or Deno TypeScript. Use Bash where it is the simplest glue.
+- **SQLite by default.** Use SQLite for storage unless the question being judged is about the production store itself. State in the README what a stand-in cannot show.
+- **Sized to the question.** Build the least that answers the agreed question. Leave out tests, invariant documents, and polish, but keep any trust boundary under judgment real.
+- **Runnable and recorded.** The README gives the commands to run, what each shows, what it does not show, and the date and environment where it was run. Do not claim an environment that was not run.
+- **No secrets, databases, or build output in Git.**
 
-```bash
-cp -R prototypes/scaffold prototypes/NN-<topic>     # from the repository root
-```
+## Generalizing shared tooling
 
-Then rename the module in its `go.mod`, replace `main.go`, and write the README from the template below.
+Shared scaffolding or common scripts are worth having only once real prototypes show what repeats. There is none yet.
 
-## Generalize step
-
-After the user signs off a prototype, and before robust work starts, review it for anything worth reusing and move that into `scaffold/`:
-
-1. List the helpers, scripts, and patterns the prototype needed that the next one would also need.
-2. Generalize each one: remove topic-specific names, document it, and put the canonical copy in `scaffold/`.
-3. Recopy an updated shared file into existing prototypes only when they benefit; rerun their demos if so.
-4. Record what was generalized in the prototype's README and in the table below.
-5. Save a durable finding through the [knowledge workflow](../docs/knowledge-base.md) when the prototype taught something about the environment or tooling.
-
-If nothing is worth generalizing, say so in the README. The step is a review, not a quota.
-
-| Shared file | Purpose | Came from |
-| --- | --- | --- |
-| `scaffold/demokit.go` | Demo runner: numbered steps, foreground and background subcommands, temporary state, secret files, optional external tools. | `01-analytics` |
-| `scaffold/main.go` | Subcommand skeleton with a `demo` entry. | `01-analytics` |
-
-A shared Deno entry point is not in the scaffold yet; add one the first time a prototype uses Deno.
-
-## README template
-
-```markdown
-# <Topic> prototype
-
-Status: awaiting signoff | signed off <date> | superseded by <link>
-Plan: <link to docs/plans/NN-.../index.md>
-
-## Run it
-## What each step shows      (table: step, approach under review, plan file)
-## What it does not show
-## Generalized               (what moved to scaffold/, or "nothing")
-## Verified                  (date, OS/arch, toolchain, what ran)
-```
+- After a prototype is signed off, note in its README anything the next prototype would likely need again.
+- Propose extracting it to the user, naming what would move and where. Extract only after the user agrees.
+- Do not generalize from a single prototype unless the user asks.
 
 ## Prototypes
 
-| Folder | Aspect of the platform | Status |
-| --- | --- | --- |
-| [01-analytics](01-analytics/README.md) | Event envelope, collector as sole store owner, flag gate, redaction, bounded queue with counted drops, flush barrier, queries through the collector. | Awaiting signoff |
+None yet.
