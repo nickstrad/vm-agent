@@ -83,7 +83,7 @@ flowchart TB
 
 **Ownership:** AI implements; you specify architecture, review evidence, inspect analytics, and approve completed slices.
 
-**Working method:** Plan each slice using [the slice-planning brief](slice-planning.md) before implementation; the roadmap orders work, while the slice plan settles its contracts, tests, analytics, and acceptance evidence.
+**Working method:** Plan each slice as a folder under [docs/plans](plans/AGENTS.md) using [the slice-planning brief](slice-planning.md); agree the architecture first, then the plan files, then what prototype the work needs, if any, before building the robust version. The roadmap orders work, while the plan settles its contracts, tests, analytics, and acceptance evidence.
 
 **Where to run the coding agent:** Start on your Mac for analytics, CLI/API logic, persistence, policies, harness adapters, and deterministic test scaffolding. Use the Linux VM agent for Linux-specific adapters, service setup, kernel boundaries, and real-system checks. You can author any source on either machine; these callouts identify where the implementation can be exercised and accepted.
 
@@ -165,9 +165,9 @@ flowchart TB
 4. Add query, task timeline, module summary, seed lookup, and snapshot/export commands through the collector, respecting [DuckDB's concurrency model](https://duckdb.org/docs/current/connect/concurrency).
 5. Add retention and query limits, and preserve platform operation during collector failure, disk exhaustion, or analytics disablement.
 
-**Tests:** Focused native fuzzing for event validation/redaction plus MC/DC flag rules; a delivery simulation covers buffering faults; native DuckDB and helper-CLI integration checks cover storage and queries.
+**Tests:** Native fuzzing plus MC/DC tables only, with no deterministic simulation: fuzz event validation/redaction, framing, and queries; fuzz buffering and flush barriers as operation sequences against a model; run store and query targets on temporary DuckDB files.
 
-**Work environment — Mac first:** Implement collector, helper CLI, temporary DuckDB tests, redaction fuzzing, and delivery simulation locally; use Linux for its native build, systemd deployment, and service-failure checks.
+**Work environment — Mac first:** Implement collector, helper CLI, temporary DuckDB fuzz targets, redaction fuzzing, and MC/DC tables locally; use Linux for its native build, systemd deployment, and service-failure checks.
 
 **Observe:** Ingestion lag, dropped events, producer identity, schema version, and collector health; exclude secrets and raw private content.
 

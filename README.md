@@ -3,7 +3,7 @@
 An AI-built personal agent platform for a Linux VM, with enforced permissions, deterministic testing, and first-class analytics.
 
 Start at [the docs index](docs/index.md) or skim [the roadmap](docs/roadmap.md).
-The repository is currently in the planning stage.
+The repository is currently in the planning stage. Plans live in [docs/plans](docs/plans/AGENTS.md); agreed approach prototypes will live in [prototypes](prototypes/AGENTS.md) as reference code, not the platform.
 
 ## Knowledge base
 
