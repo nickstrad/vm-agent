@@ -9,12 +9,13 @@
 - Follow its knowledge workflow and the project [update-knowledge-store skill](../.agents/skills/update-knowledge-store/SKILL.md): consult relevant configured findings before substantive design changes and save durable findings through `kb` with search feedback and verification evidence.
 - Keep the roadmap in [roadmap.md](roadmap.md). It describes ordered vertical slices and the extension boundary.
 - Keep implementation and verification conventions in [testing.md](testing.md) and [coding-style.md](coding-style.md).
-- Follow [slice-planning.md](slice-planning.md) to turn each roadmap slice into a bounded implementation brief before code. Add each slice plan to the index and keep unresolved decisions visible.
+- Follow [slice-planning.md](slice-planning.md) and [plans/AGENTS.md](plans/AGENTS.md) to turn each roadmap slice into a plan folder under `plans/` before code. Add each plan's index to the docs index and keep unresolved decisions visible.
+- Prototype code lives in the top-level `prototypes/` folder under [its own guide](../prototypes/AGENTS.md), not in `docs/`.
 - Keep the knowledge-tool choice, copy provenance, repo-scoped invocation, and shared project skill paths in [knowledge-base.md](knowledge-base.md). The store lives in `knowledge/` and follows its own agent contract.
 
 ## Maintain structure
 
-- Add a descriptive link to `index.md` for every new canonical Markdown document outside the knowledge corpus. Link the knowledge contract here; discover corpus entries through `kb`, without maintaining a second entry index.
+- Add a descriptive link to `index.md` for every new canonical Markdown document outside the knowledge corpus. For a plan folder, link its `index.md`; that index links the plan's own files. Link the knowledge contract here; discover corpus entries through `kb`, without maintaining a second entry index.
 - Save durable environment/tooling findings and engineering boundaries through the project skill when documentation work establishes them, including where Mac checks stop and Linux acceptance begins. Keep canonical plans in docs and link them from findings rather than copying whole plans.
 - When moving or renaming a document, update incoming links and the index.
 - Index canonical instruction files; their `CLAUDE.md` symlink aliases do not need duplicate entries.

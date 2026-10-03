@@ -83,7 +83,11 @@ Progress assertions must state when faults stop and what scheduling fairness the
 
 ## Analytics and explanation
 
-Run acceptance checks with analytics both enabled and disabled. Business results and normalized control traces must agree.
+Run each module's acceptance checks with analytics both enabled and disabled. Business results and normalized control traces must agree; that evidence belongs to the module being checked.
+
+The analytics tool and its modules are tested with native fuzzing and MC/DC tables only. They get no deterministic simulation: no seeded scheduler, virtual time, replay-twice trace comparison, or `_dst_test.go` files. Analytics is observational and may lose events as long as it counts them, so a missed interleaving costs an event, not a wrong decision.
+Its fuzz targets stay deterministic per input. Stateful parts such as queues, flush barriers, and sessions are fuzzed as operation sequences against a simple model oracle, asserting only properties that hold under any interleaving. [Plan 01](plans/01-analytics/testing.md) is the worked example.
+
 Analytics tests cover redaction, producer identity, schema evolution, delivery limits, drop reporting, flush barriers, queries, and collector failure.
 Use temporary DuckDB files and one writer owner per file. Match collector-backed query and export behavior to the helper CLI.
 

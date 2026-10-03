@@ -10,6 +10,7 @@
 - Reuse Pi through JSONL RPC with a Go adapter. Pi keeps its supported runtime. Route model traffic through trusted inference services to OpenRouter. fx is an alternative that must pass the same adapter contracts.
 - Browser support, subagents, and eBPF tracking remain extensions below the roadmap's core boundary.
 - The agent platform is currently planning and documentation. Its roadmap commands and suites are proposed; `tools/kb` is a copied upstream implementation, not an installed local tool.
+- `prototypes/` holds standalone reference prototypes used to sign off an approach. They are not platform code.
 
 ## Read first
 
@@ -18,13 +19,15 @@
 3. Before code or tests, read [docs/coding-style.md](docs/coding-style.md) and [docs/testing.md](docs/testing.md).
 4. Follow scoped `AGENTS.md` files in the directories being changed.
 5. Read the project [update-knowledge-store skill](.agents/skills/update-knowledge-store/SKILL.md) at session start and follow the knowledge workflow below throughout the task.
-6. Before starting a roadmap slice, follow [docs/slice-planning.md](docs/slice-planning.md). A roadmap bullet is direction, not an implementation brief.
+6. Before starting a roadmap slice, follow [docs/slice-planning.md](docs/slice-planning.md) and [docs/plans/AGENTS.md](docs/plans/AGENTS.md). A roadmap bullet is direction, not an implementation brief.
+7. Before building or changing a prototype, read [prototypes/AGENTS.md](prototypes/AGENTS.md).
 
 ## Plan slices before implementation
 
-- Write a bounded slice plan under `docs/` and add it to the index before implementing the slice. Follow the planning template and distinguish open decisions from settled contracts.
+- Write a bounded plan folder under `docs/plans/` and add its index to the docs index before implementing the slice. Each plan is a folder of one or more plan files; its `index.md` states their order and which may run concurrently, `architecture.md` shows before and after, and `testing.md` leads with the testing approach. Distinguish open decisions from settled contracts.
+- Move each plan file through prototype, signoff, generalize, and robust stages. Prototype in a standalone folder under `prototypes/` using Go or Deno with SQLite storage; after the user signs off, generalize reusable tooling into the scaffold, then build the robust version. Keep prototypes as reference.
 - Plan one working CLI outcome at a time, including necessary prerequisites, owned invariants, testing boundaries, observable events, acceptance evidence, and resource budgets.
-- Treat a request to plan as documentation work. Do not begin implementation merely because a plan exists or the user asks whether the project is ready; wait for an instruction to implement that slice.
+- Treat a request to plan as documentation work. Do not begin robust implementation merely because a plan exists, a prototype runs, or the user asks whether the project is ready; wait for recorded signoff and an instruction to implement that plan file.
 - Implement against the agreed slice plan once authorized. Update it when evidence changes scope, and report departures rather than silently expanding into later roadmap work.
 
 ## Knowledge workflow
@@ -52,6 +55,7 @@
 
 - Treat testability and observability as design inputs for every change, following the Dropbox approach linked in the roadmap.
 - Prefer Go native fuzzing. Corpus bytes deterministically generate scenario data, actions, faults, and scheduling choices.
+- Analytics modules and tools are the exception to deterministic simulation: test them with native fuzzing and MC/DC tables only. Their fuzz targets stay deterministic per input, and other modules still prove analytics on/off equivalence in their own suites.
 - Expand an existing suite when a new module enlarges its boundary. Add a focused suite for a distinct invariant or contract; do not force every concern into a universal simulator.
 - Use independent invariant oracles, explicit MC/DC decision witnesses, saved fuzz inputs, and reproducible scenario replay.
 - State which sources of nondeterminism a suite controls. Validate native adapters, protocols, real Linux boundaries, and live model behavior with the appropriate separate checks.
