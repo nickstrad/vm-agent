@@ -1,6 +1,6 @@
 # 02 Emitter and delivery
 
-Part of [plan 01](index.md). Roadmap item 3. **Stage:** prototype definition proposed. Everything below is planned.
+Part of [plan 01](index.md). Roadmap item 3. **Stage:** draft, awaiting architecture agreement. Everything below is planned.
 Depends on [01](01-first-event.md). May run concurrently with [03](03-helper-cli-queries.md) and 05a as **lane A**; see [the concurrency rules](index.md#concurrency-rules).
 
 ## Outcome

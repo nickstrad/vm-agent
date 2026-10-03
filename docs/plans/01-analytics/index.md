@@ -2,7 +2,9 @@
 
 Covers [roadmap](../../roadmap.md#analytics-collector-analytics-duckdb-and-analytics-helper-cli--inspect-the-first-event) items 1–5: the analytics collector, `analytics.duckdb`, and the analytics helper CLI.
 
-**Status:** planned. No platform code exists. No prototype exists; a [prototype definition](#prototype-definition) is proposed for discussion. Every command and package below is proposed.
+**Stage:** architecture pass, under discussion with the user. No pass has been agreed yet. No platform code or prototype exists, and every command and package below is proposed.
+
+This plan was drafted before the [order of work](../AGENTS.md#order-of-work) was set, so its plan files, testing file, and prototype definition already exist. Treat them as drafts: they are revised after [architecture.md](architecture.md) is agreed, and the prototype pass happens after that.
 
 ## Outcome
 
@@ -10,8 +12,8 @@ Covers [roadmap](../../roadmap.md#analytics-collector-analytics-duckdb-and-analy
 
 ## Read in this order
 
-1. This index: order, concurrency, prototype definition, signoff questions.
-2. [architecture.md](architecture.md): before and after, contracts, one change diagram per plan file.
+1. [architecture.md](architecture.md): before and after, contracts, one change diagram per plan file. This is what is under discussion now.
+2. This index: order, concurrency, prototype definition, signoff questions.
 3. [testing.md](testing.md): fuzzing and MC/DC design. Analytics has no deterministic simulation.
 4. The plan file you were asked to execute.
 
@@ -19,11 +21,11 @@ Covers [roadmap](../../roadmap.md#analytics-collector-analytics-duckdb-and-analy
 
 | File | CLI outcome | Roadmap items | Depends on | May run concurrently with | Stage |
 | --- | --- | --- | --- | --- | --- |
-| [01-first-event.md](01-first-event.md) | `events` shows one event that travelled emitter → collector → DuckDB. | 1, 2 | Signoff | — | Prototype definition proposed |
-| [02-emitter-delivery.md](02-emitter-delivery.md) | `health` shows accepted, dropped, and rejected counts; flags gate emission. | 3 | 01 | 03, 05a | Prototype definition proposed |
-| [03-helper-cli-queries.md](03-helper-cli-queries.md) | `task`, `query`, `modules`, `seed`, and `export` answer questions through the collector. | 4 | 01 | 02, 05a | Prototype definition proposed |
-| [04-retention-limits-failure.md](04-retention-limits-failure.md) | `health` reports retention and degraded state; callers survive collector failure and a full disk. | 5 | 02, 03 | 05a | No prototype proposed |
-| [05-linux-deployment.md](05-linux-deployment.md) | The collector runs under systemd on the VM; the Mac helper CLI reads it through SSH. | 1 (deploy) | 01 for 05a; 04 for 05b | 02, 03, 04 (05a only) | No prototype proposed |
+| [01-first-event.md](01-first-event.md) | `events` shows one event that travelled emitter → collector → DuckDB. | 1, 2 | Signoff | — | Draft; awaiting architecture agreement |
+| [02-emitter-delivery.md](02-emitter-delivery.md) | `health` shows accepted, dropped, and rejected counts; flags gate emission. | 3 | 01 | 03, 05a | Draft; awaiting architecture agreement |
+| [03-helper-cli-queries.md](03-helper-cli-queries.md) | `task`, `query`, `modules`, `seed`, and `export` answer questions through the collector. | 4 | 01 | 02, 05a | Draft; awaiting architecture agreement |
+| [04-retention-limits-failure.md](04-retention-limits-failure.md) | `health` reports retention and degraded state; callers survive collector failure and a full disk. | 5 | 02, 03 | 05a | Draft; awaiting architecture agreement |
+| [05-linux-deployment.md](05-linux-deployment.md) | The collector runs under systemd on the VM; the Mac helper CLI reads it through SSH. | 1 (deploy) | 01 for 05a; 04 for 05b | 02, 03, 04 (05a only) | Draft; awaiting architecture agreement |
 
 ## Order
 
@@ -60,7 +62,7 @@ Lanes share only the contracts in [architecture.md](architecture.md#contracts), 
 
 ## Prototype definition
 
-**Status: proposed for discussion, not agreed. Nothing is built.** An earlier prototype was built before this was discussed and was removed at the user's request on 2026-10-03.
+**Status: draft, not agreed, and not yet up for discussion; the prototype pass follows the architecture and plan-file passes. Nothing is built.** An earlier prototype was built before this was discussed and was removed at the user's request on 2026-10-03.
 
 Proposed shape: a mix. Two small prototypes and three plan files with none.
 
@@ -108,7 +110,8 @@ Each answer is recorded here with its date. The last column is the proposal abov
 Settled:
 
 - **Analytics testing is native fuzzing plus MC/DC tables, with no deterministic simulation.** User decision, 2026-10-03. Analytics is observational and may lose events as long as it counts them. See [testing.md](testing.md).
-- **Define and agree the prototype before building it.** User decision, 2026-10-03: each part of a plan may need a different prototype or none, so the plan proposes the shape and the user agrees first. Agreed prototypes stay in the repository as reference. See [the plans guide](../AGENTS.md#define-the-prototype-first).
+- **Plan in passes: architecture first, then plan files, then a prototype pass.** User decision, 2026-10-03. See [the plans guide](../AGENTS.md#order-of-work).
+- **Define and agree the prototype before building it.** User decision, 2026-10-03: each part of a plan may need a different prototype or none, so the plan proposes the shape and the user agrees first. Agreed prototypes stay in the repository as reference. See [the plans guide](../AGENTS.md#prototype-pass).
 - **The collector is the only process that opens `analytics.duckdb`.** Roadmap contract. The helper CLI reads through the collector.
 - **Mac first.** Roadmap callout. Linux adds the native build, systemd deployment, and service-failure checks in file 05.
 - **DuckDB driver:** [duckdb-go](https://github.com/duckdb/duckdb-go), as the roadmap names. It needs cgo and a C toolchain on each target.

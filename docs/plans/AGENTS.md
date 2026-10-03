@@ -3,7 +3,7 @@
 `docs/plans/` holds the implementation plans for roadmap work. One folder plans one [roadmap](../roadmap.md) section.
 A plan is documentation. Writing one does not authorize implementation; wait for the user to say which plan file to execute.
 
-Follow the root and [docs](../AGENTS.md) agent guides, [slice planning](../slice-planning.md), [testing](../testing.md), and [coding style](../coding-style.md). This guide adds the folder layout, the prototype protocol, and the testing emphasis.
+Follow the root and [docs](../AGENTS.md) agent guides, [slice planning](../slice-planning.md), [testing](../testing.md), and [coding style](../coding-style.md). This guide adds the folder layout, the order of work, the prototype pass, and the testing emphasis.
 
 ## Layout
 
@@ -11,8 +11,8 @@ Follow the root and [docs](../AGENTS.md) agent guides, [slice planning](../slice
 docs/plans/
   AGENTS.md                  this guide (CLAUDE.md is a relative symlink to it)
   NN-<roadmap-section>/      one plan; NN follows roadmap order
-    index.md                 required: outcome, order, concurrency, prototype definition, decisions, budgets
-    architecture.md          normal: modules and diagrams before/after, one change diagram per plan file
+    architecture.md          written first: modules and technical diagrams before/after; later one change diagram per plan file
+    index.md                 required: outcome, stage, order, concurrency, prototype definition, decisions, budgets
     testing.md               normal: the plan's testing approach, targets, tables, oracles, limits
     01-<cli-outcome>.md      1..n plan files, each one working CLI outcome
     02-<cli-outcome>.md
@@ -23,15 +23,37 @@ prototypes/                 agreed prototypes only (outside docs/, kept as refer
 - Number plan files in their default execution order. Numbers are identifiers, not a promise of strict sequence; `index.md` owns the real ordering.
 - Link every plan's `index.md` from [the docs index](../index.md). The plan index links its own files, so the docs index does not list them individually.
 
+## Order of work
+
+A plan is built in passes. Each pass ends with the user's agreement, recorded with its date in `index.md`, before the next begins.
+
+```text
+1 architecture  ---->  2 plan files  ---->  3 prototype pass  ---->  4 prototype    ---->  5 robust
+  architecture.md        index.md,            agree whether one        build what was       implement a
+  with technical         testing.md,          is needed and what       agreed, if any;      plan file when
+  diagrams;              1..n plan files      kind                     user signs off       instructed
+  back and forth
+  with the user
+```
+
+1. **Architecture pass.** Start with `architecture.md` only: the technical diagrams, modules, and contracts. Create a short `index.md` holding the plan's outcome, its stage, and the questions and decisions raised so far. Go back and forth with the user on the architecture until they agree. Do not write plan files, a testing file, or a prototype proposal during this pass.
+2. **Plan-file pass.** Once the architecture is agreed, split the work into 1..n plan files and write the full `index.md` and `testing.md`. Add the change diagram per plan file to `architecture.md`.
+3. **Prototype pass.** With the plan files in hand, discuss whether a prototype is needed and, if so, what kind. Record the agreed definition in `index.md`.
+4. **Prototype and signoff.** Build only what was agreed, if anything. The user answers the signoff questions.
+5. **Robust.** Implement a plan file when the user instructs it.
+
+A later pass can send the work back: if plan files or a prototype expose a problem in the architecture, update `architecture.md` first and get agreement again.
+When asked to plan a roadmap section, do the architecture pass and stop for discussion. Do not run ahead into later passes.
+
 ## index.md: ordering and concurrency
 
-The index is the first file an agent reads and the only place that states execution order. It must contain:
+The index is the first file an agent reads and the only place that states execution order. During the architecture pass it holds only the outcome, the stage, and the open questions and decisions. From the plan-file pass on it must contain:
 
-1. **Outcome** of the whole plan and the roadmap items it covers.
+1. **Outcome** of the whole plan, the roadmap items it covers, and the current pass with the date each earlier pass was agreed.
 2. **Plan files** in a table: file, CLI outcome, depends on, may run concurrently with, stage, and status.
 3. **Order diagram** in text art showing dependencies, concurrent lanes, and signoff gates.
 4. **Concurrency rules:** for each concurrent group, the packages or files each lane owns and the shared contracts that are frozen while lanes run. Two plan files may run concurrently only when they own disjoint source and share only contracts that are already signed off. A lane that needs a shared contract changed stops and updates `architecture.md` first.
-5. **Prototype definition:** the proposed shape and what each prototype is, as [below](#define-the-prototype-first), with the user's recorded answer.
+5. **Prototype definition:** added in the [prototype pass](#prototype-pass): the proposed shape and what each prototype is, with the user's recorded answer.
 6. **Signoff questions and decisions:** settled contracts with reasons, and open decisions the user must answer. Keep the two visibly separate.
 7. **Budgets and acceptance** for the plan: fuzz discovery limits, VM cost, live-service spend, and the evidence that completes the plan.
 
@@ -39,17 +61,19 @@ Update the status column when a stage changes. Record signoff with its date and 
 
 ## architecture.md: before and after
 
-Explain what exists before the plan, what exists after it, and what each plan file changes.
+This is the first file written and the subject of the architecture pass. Explain what exists before the plan, what exists after it, and, once plan files exist, what each one changes.
+Lead with diagrams: the user reviews the architecture by reading them, so make each one concrete enough to disagree with.
 
 - **Before** and **after** diagrams of processes, packages, files on disk, and trust boundaries. Mark new, changed, and removed parts.
 - **Module table:** each package or binary, its responsibility, the invariants it owns, and the plan file that creates or changes it.
 - **Contracts:** wire formats, schemas, state transitions, errors, and limits shared between plan files. These are what concurrent lanes freeze.
-- **Change diagram per plan file** when the plan has more than one file: the delta that file adds on top of the previous state. Each plan file links to its diagram instead of copying it.
+- **Open questions:** the choices the user needs to weigh, each with the alternatives considered and a recommendation.
+- **Change diagram per plan file**, added in the plan-file pass when the plan has more than one file: the delta that file adds on top of the previous state. Each plan file links to its diagram instead of copying it.
 - Label everything planned as planned. After implementation, correct the diagrams to match what was built.
 
 ## testing.md: lead with the testing approach
 
-Testing design is the core of a plan, not an appendix. Write it before the implementation steps and make it specific enough to review without reading code.
+Testing design is the core of a plan, not an appendix. In the plan-file pass, write it before the implementation steps and make it specific enough to review without reading code.
 
 - Name the evidence kinds the plan uses and the ones it deliberately does not use, with the reason.
 - List every fuzz target with its input decoding, the property, and the independent oracle.
@@ -73,17 +97,17 @@ The exemption is narrow:
 - Stateful analytics behavior (queues, flush barriers, sessions) is fuzzed as operation sequences against a simple model oracle, asserting properties that hold under any interleaving.
 - Other modules' suites still check that their business results and control traces are identical with analytics enabled and disabled. That check belongs to those modules, not to the analytics plan.
 
-## Define the prototype first
+## Prototype pass
 
-What it takes to prototype differs for each part of a plan. Decide that in the plan, with the user, before anything is built. Do not build a prototype, a scaffold, or shared tooling ahead of that agreement.
+What it takes to prototype differs for each part of a plan. Decide it with the user after the plan files exist and before anything is built. Do not build a prototype, a scaffold, or shared tooling ahead of that agreement, and do not propose a prototype during the architecture pass.
 
 ```text
-define prototype  ---->  user agrees  ---->  build what   ---->  signoff  ---->  robust
-in index.md              or changes it       was agreed          of the plan
-(shape + reasons)        (recorded)          (or nothing)        questions
+plan files agreed  ---->  propose in    ---->  user agrees  ---->  build what   ---->  signoff
+                          index.md             or changes it       was agreed          of the plan
+                          (shape + reasons)    (recorded)          (or nothing)        questions
 ```
 
-**Define.** The plan's `index.md` carries a **Prototype definition** section that proposes one of these shapes and gives the reason:
+**Propose.** Add a **Prototype definition** section to the plan's `index.md` that proposes one of these shapes and gives the reason:
 
 | Shape | Use when |
 | --- | --- |
@@ -100,7 +124,7 @@ A plan may mix them: one prototype for some files and none for others. For each 
 - how the user runs it and what they should look at;
 - what it cannot show, and where the robust stage verifies that instead.
 
-**Agree.** The user accepts, changes, or rejects the definition. Record the answer and date in the index. Until then the stage of every plan file is "prototype definition proposed".
+**Agree.** The user accepts, changes, or rejects the definition. Record the answer and date in the index.
 
 **Build.** Build exactly what was agreed, following [the prototypes guide](../../prototypes/AGENTS.md). Run it and record the date and environment in its README. Where the agreed answer is "no prototype", skip this stage.
 

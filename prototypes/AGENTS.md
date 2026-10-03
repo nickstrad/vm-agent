@@ -3,13 +3,13 @@
 `prototypes/` holds small runnable experiments that let the user judge an approach before robust work starts. It is empty until a plan's prototype definition is agreed.
 Prototypes are not platform code. Production code never imports them, and a passing demo is never acceptance evidence for a plan.
 
-Follow the root agent guide and [the plans guide](../docs/plans/AGENTS.md#define-the-prototype-first), which says how a prototype is defined, agreed, and signed off.
+Follow the root agent guide and [the plans guide](../docs/plans/AGENTS.md#prototype-pass), which says when a prototype is discussed and how it is defined, agreed, and signed off.
 
 ## Discuss before building
 
 Do not create a prototype, a scaffold, or shared prototype tooling on your own initiative. What a prototype needs differs for each part of a plan, so the plan defines it first and the user agrees to it.
 
-1. The plan's `index.md` proposes a prototype definition: the shape, and for each prototype its question, scope, language, storage, and what the user will judge.
+1. After the architecture and plan files are agreed, the plan's `index.md` proposes a prototype definition: the shape, and for each prototype its question, scope, language, storage, and what the user will judge.
 2. The user agrees, changes, or rejects the definition. Record the answer and date in the index.
 3. Only then build what was agreed, and nothing beyond it.
 

@@ -1,6 +1,6 @@
 # 05 Linux deployment
 
-Part of [plan 01](index.md). Roadmap item 1's deployment half and the slice's Linux checks. **Stage:** no prototype proposed, because deployment adds no new protocol or storage approach. Everything below is planned.
+Part of [plan 01](index.md). Roadmap item 1's deployment half and the slice's Linux checks. **Stage:** draft, awaiting architecture agreement. Everything below is planned.
 
 Two checkpoints:
 

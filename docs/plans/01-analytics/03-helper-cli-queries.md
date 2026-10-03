@@ -1,6 +1,6 @@
 # 03 Helper CLI queries
 
-Part of [plan 01](index.md). Roadmap item 4. **Stage:** prototype definition proposed. Everything below is planned.
+Part of [plan 01](index.md). Roadmap item 4. **Stage:** draft, awaiting architecture agreement. Everything below is planned.
 Depends on [01](01-first-event.md). May run concurrently with [02](02-emitter-delivery.md) and 05a as **lane B**; see [the concurrency rules](index.md#concurrency-rules).
 
 ## Outcome

@@ -83,7 +83,7 @@ flowchart TB
 
 **Ownership:** AI implements; you specify architecture, review evidence, inspect analytics, and approve completed slices.
 
-**Working method:** Plan each slice as a folder under [docs/plans](plans/AGENTS.md) using [the slice-planning brief](slice-planning.md); agree what prototype the work needs, if any, sign off the approach, then build the robust version. The roadmap orders work, while the plan settles its contracts, tests, analytics, and acceptance evidence.
+**Working method:** Plan each slice as a folder under [docs/plans](plans/AGENTS.md) using [the slice-planning brief](slice-planning.md); agree the architecture first, then the plan files, then what prototype the work needs, if any, before building the robust version. The roadmap orders work, while the plan settles its contracts, tests, analytics, and acceptance evidence.
 
 **Where to run the coding agent:** Start on your Mac for analytics, CLI/API logic, persistence, policies, harness adapters, and deterministic test scaffolding. Use the Linux VM agent for Linux-specific adapters, service setup, kernel boundaries, and real-system checks. You can author any source on either machine; these callouts identify where the implementation can be exercised and accepted.
 

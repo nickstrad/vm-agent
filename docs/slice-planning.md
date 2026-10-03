@@ -2,7 +2,7 @@
 
 The [roadmap](roadmap.md) orders the platform's capabilities. Before implementing a slice, write a plan folder under [`docs/plans/`](plans/AGENTS.md) and link its index from [index.md](index.md).
 A plan is a folder of one or more plan files. Its index states their order and which may run concurrently; its `architecture.md` and `testing.md` carry the shared contracts and testing approach. The [plans guide](plans/AGENTS.md#plan-file-contents) maps the brief below onto those files.
-Planning and implementation are separate tasks. A request to plan produces a reviewable plan, including a proposed [prototype definition](plans/AGENTS.md#define-the-prototype-first) for discussion. It does not produce prototype code. Robust implementation begins after the user signs off and instructs an agent to implement a plan file.
+Planning and implementation are separate tasks. Plan in [passes](plans/AGENTS.md#order-of-work): the architecture and its technical diagrams first, discussed back and forth with the user; then the plan files; then a [prototype pass](plans/AGENTS.md#prototype-pass) to agree whether a prototype is needed and what kind. A request to plan starts the architecture pass and stops for discussion. It does not produce prototype code. Robust implementation begins after the user signs off and instructs an agent to implement a plan file.
 
 Start with the first analytics slice on Mac, aiming for one emitted event that the analytics helper CLI can retrieve. Identify its local build prerequisites and later Linux deployment checks in the brief. Broader query features can follow in later slices if needed to keep this outcome bounded.
 

@@ -1,6 +1,6 @@
 # 01 First event
 
-Part of [plan 01](index.md). Roadmap items 1 and 2. **Stage:** prototype definition proposed. Everything below is planned.
+Part of [plan 01](index.md). Roadmap items 1 and 2. **Stage:** draft, awaiting architecture agreement. Everything below is planned.
 
 ## Outcome
 

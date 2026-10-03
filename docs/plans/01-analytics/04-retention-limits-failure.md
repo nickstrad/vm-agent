@@ -1,6 +1,6 @@
 # 04 Retention, limits, and failure isolation
 
-Part of [plan 01](index.md). Roadmap item 5. **Stage:** no prototype proposed. Everything below is planned.
+Part of [plan 01](index.md). Roadmap item 5. **Stage:** draft, awaiting architecture agreement. Everything below is planned.
 Depends on [02](02-emitter-delivery.md) and [03](03-helper-cli-queries.md). 05a may run concurrently.
 
 ## Outcome
