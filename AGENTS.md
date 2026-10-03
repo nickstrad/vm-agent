@@ -82,6 +82,16 @@
 - Keep `AGENTS.md` canonical. `CLAUDE.md` is a relative symlink to it; update the target rather than creating divergent instructions.
 - Do not commit unless the user asks.
 
+## Branches and worktrees
+
+- Keep the root checkout on `main`. Do branch work in a Git worktree under `worktrees/`, one folder per branch, named after the branch.
+- Start a branch with `git worktree add worktrees/<branch> -b <branch> main` from the repository root. Check out an existing branch with `git worktree add worktrees/<branch> <branch>`.
+- Run the agent, builds, and checks for that branch inside its worktree folder. Do not switch the root checkout to a feature branch.
+- `worktrees/` is tracked only through its `.gitignore`; everything else in it is ignored. Never commit a worktree's contents from the root checkout.
+- Ignored local state is per checkout. In a worktree, set `KB_ROOT` to that worktree's `docs/knowledge` and run `kb reindex --all` before the first search.
+- After a branch merges, remove its worktree with `git worktree remove worktrees/<branch>` and delete the branch. Use `git worktree list` to see what exists and `git worktree prune` to clear stale records.
+- Commit directly on `main` only when the user asks for that, such as a small repository-protocol change.
+
 ## Verification
 
 - Run checks appropriate to the changed boundary and report what was actually exercised.
