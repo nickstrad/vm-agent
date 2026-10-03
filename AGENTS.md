@@ -41,7 +41,7 @@
 - Judge every search using its explicit search ID: mark useful or unhelpful hits, or record `--none` when nothing helped, including zero-hit searches. Avoid ambiguous `--last` feedback across concurrent sessions.
 - Before finishing, save newly established durable, non-obvious findings about this project's environment, tooling, and engineering contracts. Mac/Linux execution boundaries, replay limitations, and repository-specific setup belong here; keep personal preferences and transient task progress out. Search before adding; revise existing entries where appropriate. Draft outside the corpus, import or edit through `kb`, and confirm the result with `kb show`.
 - Record evidence and verification limits, never secrets or transient task progress. Keep architecture plans and implementation status in `docs/`.
-- Run the copied CLI from `tools/kb`, using a temporary binary or `go run` with `fts5`; do not install it globally or change shell profiles. This store starts in full-text mode (`KB_EMBEDDER=none`); do not switch providers or models without a request.
+- Run the CLI through `scripts/kb <args>`: it pins `KB_ROOT` to the current checkout's `docs/knowledge` and `KB_EMBEDDER=none`, builds `tools/kb` with `fts5` into the ignored `docs/knowledge/.kb/bin/`, and reindexes when the local index is missing. After pulling or merging entry changes, or when `kb doctor` reports stale/orphan entries, run `scripts/kb reindex --all`. Do not install it globally or change shell profiles. This store starts in full-text mode (`KB_EMBEDDER=none`); do not switch providers or models without a request.
 - If unavailable, report the limitation once per session and continue independent work; do not browse the corpus or silently skip required knowledge maintenance.
 - Follow the skill for diagnosis, index repair, and optional exports. Do not generate a corpus Markdown index unless asked; Git tracks entries and contracts, while `docs/knowledge/.kb/` stays local.
 
@@ -90,7 +90,7 @@
 - Start a branch with `git worktree add worktrees/<branch> -b <branch> main` from the repository root. Check out an existing branch with `git worktree add worktrees/<branch> <branch>`.
 - Run the agent, builds, and checks for that branch inside its worktree folder. Do not switch the root checkout to a feature branch.
 - `worktrees/` is tracked only through its `.gitignore`; everything else in it is ignored. Never commit a worktree's contents from the root checkout.
-- Ignored local state is per checkout. In a worktree, set `KB_ROOT` to that worktree's `docs/knowledge` and run `kb reindex --all` before the first search.
+- Ignored local state is per checkout. `scripts/kb` handles this per worktree: it targets that worktree's `docs/knowledge` and builds the index on first use.
 - After a branch merges, remove its worktree with `git worktree remove worktrees/<branch>` and delete the branch. Use `git worktree list` to see what exists and `git worktree prune` to clear stale records.
 - Commit directly on `main` only when the user asks for that, such as a small repository-protocol change.
 

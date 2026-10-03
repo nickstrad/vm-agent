@@ -20,6 +20,10 @@ The store starts with `KB_EMBEDDER=none` for full-text search without a hosted s
 
 ## Run the repo-scoped CLI
 
+Preferred: run `scripts/kb <args>` from any checkout or worktree. It derives `KB_ROOT` from its own location, pins `KB_EMBEDDER=none`, builds `tools/kb` with `fts5` into the ignored `docs/knowledge/.kb/bin/` (rebuilding only when the sources or Go version change), and runs `reindex --all` when the local index is missing. It does not detect a merely stale index: after pulling or merging entry changes, or when `kb doctor` reports stale or orphan entries, run `scripts/kb reindex --all`. It installs nothing globally.
+
+The manual recipe below does the same steps by hand.
+
 From the repository root, build a temporary executable and scope configuration to the current terminal session:
 
 ```bash

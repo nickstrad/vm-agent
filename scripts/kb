@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Repo-scoped kb wrapper. Usage: scripts/kb <kb args...>
+#
+# Makes the knowledge-base CLI deterministic for any checkout or worktree:
+#   - KB_ROOT is derived from this script's location, never from the caller.
+#   - KB_EMBEDDER is pinned to "none" (full-text only).
+#   - The binary is built from tools/kb with the fts5 tag into the ignored
+#     docs/knowledge/.kb/bin/, and rebuilt only when tools/kb sources change.
+#   - A missing local index is rebuilt with `reindex --all` before first use.
+# Nothing is installed globally and no shell profile is touched.
+set -euo pipefail
+
+repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
+export KB_ROOT="$repo/docs/knowledge"
+export KB_EMBEDDER=none
+
+bin_dir="$KB_ROOT/.kb/bin"
+bin="$bin_dir/kb"
+stamp="$bin_dir/source.sha"
+
+command -v go >/dev/null || { echo "scripts/kb: go not found (needs Go 1.26+ and a C compiler)" >&2; exit 127; }
+
+# Hash tools/kb sources plus the Go toolchain version, so either change rebuilds.
+want="$( { go version; cd "$repo/tools/kb" && find . -type f \( -name '*.go' -o -name go.mod -o -name go.sum \) | LC_ALL=C sort | xargs shasum; } | shasum | cut -d' ' -f1)"
+
+if [[ ! -x "$bin" || ! -f "$stamp" || "$(cat "$stamp")" != "$want" ]]; then
+  mkdir -p "$bin_dir"
+  echo "scripts/kb: building tools/kb (fts5)..." >&2
+  go -C "$repo/tools/kb" build -tags fts5 -o "$bin" ./cmd/kb
+  printf '%s\n' "$want" >"$stamp"
+fi
+
+if [[ ! -f "$KB_ROOT/.kb/kb.sqlite" ]]; then
+  echo "scripts/kb: no local index; running reindex --all..." >&2
+  "$bin" reindex --all >&2
+fi
+
+exec "$bin" "$@"
