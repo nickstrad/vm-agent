@@ -3,7 +3,7 @@
 `docs/plans/` holds the implementation plans for roadmap work. One folder plans one [roadmap](../roadmap.md) section.
 A plan is documentation. Writing one does not authorize implementation; wait for the user to say which plan file to execute.
 
-Follow the root and [docs](../AGENTS.md) agent guides, [slice planning](../slice-planning.md), [testing](../testing.md), and [coding style](../coding-style.md). This guide adds the folder layout, the order of work, the prototype pass, and the testing emphasis.
+Follow the root and [docs](../AGENTS.md) agent guides, [slice planning](../slice-planning.md), [testing](../testing.md), and [coding style](../coding-style.md). This guide adds the folder layout, the order of work, signoff, and the testing emphasis.
 
 ## Layout
 
@@ -12,11 +12,10 @@ docs/plans/
   AGENTS.md                  this guide (CLAUDE.md is a relative symlink to it)
   NN-<roadmap-section>/      one plan; NN follows roadmap order
     architecture.md          written first: modules and technical diagrams before/after; later one change diagram per plan file
-    index.md                 required: outcome, stage, order, concurrency, prototype definition, decisions, budgets
+    index.md                 required: outcome, stage, order, concurrency, signoff, decisions, budgets
     testing.md               normal: the plan's testing approach, targets, tables, oracles, limits
     01-<cli-outcome>.md      1..n plan files, each one working CLI outcome
     02-<cli-outcome>.md
-prototypes/                 agreed prototypes only (outside docs/, kept as reference)
 ```
 
 - A plan has between 1 and n plan files. Split when a section holds more than one CLI outcome or when parts can proceed concurrently. A one-file plan may fold `architecture.md` and `testing.md` into that file as sections with the same headings.
@@ -25,24 +24,22 @@ prototypes/                 agreed prototypes only (outside docs/, kept as refer
 
 ## Order of work
 
-A plan is built in passes. Each pass ends with the user's agreement, recorded with its date in `index.md`, before the next begins.
+A plan is built in two documentation passes. Each pass ends with the user's agreement, recorded with its date in `index.md`, before the next begins. Implementation follows recorded plan signoff and an instruction to execute a plan file.
 
 ```text
-1 architecture  ---->  2 plan files  ---->  3 prototype pass  ---->  4 prototype    ---->  5 robust
-  architecture.md        index.md,            agree whether one        build what was       implement a
-  with technical         testing.md,          is needed and what       agreed, if any;      plan file when
-  diagrams;              1..n plan files      kind                     user signs off       instructed
-  back and forth
-  with the user
+1 architecture  ---->  2 plan files and signoff  ---->  3 implementation  ---->  4 acceptance
+  architecture.md        index.md, testing.md,          execute the             verify the plan's
+  and a short index;     1..n plan files;              instructed plan file    criteria; record
+  discuss diagrams       settle decisions and          against agreed          evidence and
+  and agree contracts    record user signoff           contracts               update docs
 ```
 
-1. **Architecture pass.** Start with `architecture.md` only: the technical diagrams, modules, and contracts. Create a short `index.md` holding the plan's outcome, its stage, and the questions and decisions raised so far. Go back and forth with the user on the architecture until they agree. Do not write plan files, a testing file, or a prototype proposal during this pass.
-2. **Plan-file pass.** Once the architecture is agreed, split the work into 1..n plan files and write the full `index.md` and `testing.md`. Add the change diagram per plan file to `architecture.md`.
-3. **Prototype pass.** With the plan files in hand, discuss whether a prototype is needed and, if so, what kind. Record the agreed definition in `index.md`.
-4. **Prototype and signoff.** Build only what was agreed, if anything. The user answers the signoff questions.
-5. **Robust.** Implement a plan file when the user instructs it.
+1. **Architecture pass.** Start with `architecture.md`: the technical diagrams, modules, and contracts. Create a short `index.md` holding the plan's outcome, its stage, and the questions and decisions raised so far. Go back and forth with the user on the architecture until they agree. Do not write plan files or a testing file during this pass.
+2. **Plan-file pass and signoff.** Once the architecture is agreed, split the work into 1..n plan files and write the full `index.md` and `testing.md`. Add the change diagram per plan file to `architecture.md`. Review testing, acceptance criteria, budgets, and open decisions with the user; record their answers and signoff in `index.md`.
+3. **Implementation.** Implement a signed-off plan file when the user instructs it, following the agreed order and concurrency rules.
+4. **Acceptance.** Run the plan's required checks and record the actual evidence. Mark the plan file complete only when its acceptance criteria are satisfied.
 
-A later pass can send the work back: if plan files or a prototype expose a problem in the architecture, update `architecture.md` first and get agreement again.
+A later stage can send the work back: if plan files or implementation evidence expose a problem in the architecture, update `architecture.md` first and get agreement again.
 When asked to plan a roadmap section, do the architecture pass and stop for discussion. Do not run ahead into later passes.
 
 ## index.md: ordering and concurrency
@@ -53,9 +50,8 @@ The index is the first file an agent reads and the only place that states execut
 2. **Plan files** in a table: file, CLI outcome, depends on, may run concurrently with, stage, and status.
 3. **Order diagram** in text art showing dependencies, concurrent lanes, and signoff gates.
 4. **Concurrency rules:** for each concurrent group, the packages or files each lane owns and the shared contracts that are frozen while lanes run. Two plan files may run concurrently only when they own disjoint source and share only contracts that are already signed off. A lane that needs a shared contract changed stops and updates `architecture.md` first.
-5. **Prototype definition:** added in the [prototype pass](#prototype-pass): the proposed shape and what each prototype is, with the user's recorded answer.
-6. **Signoff questions and decisions:** settled contracts with reasons, and open decisions the user must answer. Keep the two visibly separate.
-7. **Budgets and acceptance** for the plan: fuzz discovery limits, VM cost, live-service spend, and the evidence that completes the plan.
+5. **Signoff questions and decisions:** settled contracts with reasons, and open decisions the user must answer. Keep the two visibly separate. Record which plan file the user instructs the agent to execute.
+6. **Budgets and acceptance** for the plan: fuzz discovery limits, VM cost, live-service spend, and the evidence that completes the plan.
 
 Update the status column when a stage changes. Record signoff with its date and who gave it.
 
@@ -97,48 +93,18 @@ The exemption is narrow:
 - Stateful analytics behavior (queues, flush barriers, sessions) is fuzzed as operation sequences against a simple model oracle, asserting properties that hold under any interleaving.
 - Other modules' suites still check that their business results and control traces are identical with analytics enabled and disabled. That check belongs to those modules, not to the analytics plan.
 
-## Prototype pass
+## Signoff and implementation
 
-What it takes to prototype differs for each part of a plan. Decide it with the user after the plan files exist and before anything is built. Do not build a prototype, a scaffold, or shared tooling ahead of that agreement, and do not propose a prototype during the architecture pass.
+The user reviews the plan files and answers the signoff questions. Record each answer, the date, and who gave signoff in `index.md`. Requested changes go into the plan files, `testing.md`, and `architecture.md` before implementation.
 
-```text
-plan files agreed  ---->  propose in    ---->  user agrees  ---->  build what   ---->  signoff
-                          index.md             or changes it       was agreed          of the plan
-                          (shape + reasons)    (recorded)          (or nothing)        questions
-```
+Once signoff is recorded and the user instructs an agent to execute a plan file:
 
-**Propose.** Add a **Prototype definition** section to the plan's `index.md` that proposes one of these shapes and gives the reason:
-
-| Shape | Use when |
-| --- | --- |
-| One prototype for the whole plan | The plan files share one approach question, or the parts only make sense seen together. |
-| One prototype per plan file | The files raise separate questions that can be judged separately. |
-| Several prototypes working together | The question is about how independent parts interact, such as two processes and a protocol between them. |
-| No prototype | The change is scoped enough to judge from the plan, or adds no new approach question. State the reason. |
-
-A plan may mix them: one prototype for some files and none for others. For each proposed prototype state:
-
-- the question it answers and the signoff questions it serves;
-- what it includes and what it leaves out;
-- language (Go or Deno) and storage (SQLite unless the question is about the production store itself);
-- how the user runs it and what they should look at;
-- what it cannot show, and where the robust stage verifies that instead.
-
-**Agree.** The user accepts, changes, or rejects the definition. Record the answer and date in the index.
-
-**Build.** Build exactly what was agreed, following [the prototypes guide](../../prototypes/AGENTS.md). Run it and record the date and environment in its README. Where the agreed answer is "no prototype", skip this stage.
-
-**Signoff.** The user runs any prototype and answers the plan's signoff questions; questions that need no prototype are answered from the plan. Record each answer in `index.md`. Changes the user asks for go into the plan and `architecture.md` before any robust code.
-
-**Robust.** Then implement the plan file to full standard under the production module.
-
-- Write new code against the signed-off contracts. Do not copy prototype code into production; a prototype is a reference for behavior, not a starting point for source.
-- Use the production store and adapters, and verify whatever a stand-in could not show. The plan names those gaps.
+- Implement the production modules against the agreed contracts, using the production stores and adapters.
 - Deliver the complete testing design, the owner `invariants.md` or `architecture.md` documents, observable events, and acceptance evidence.
-- Keep any prototype. When the plan completes, mark its README superseded with a link to the robust code.
+- Run the required native, protocol, and Linux checks separately from controlled tests; record their verification limits.
+- Update the plan and related docs to match the implemented behavior and actual evidence.
 
-Do not treat a prototype's demo as acceptance evidence, and do not start the robust stage on a plan file whose signoff is not recorded.
-Extracting shared prototype tooling is a separate, later proposal to the user; see [the prototypes guide](../../prototypes/AGENTS.md#generalizing-shared-tooling).
+Plan agreement alone does not authorize implementation. Start only the plan file the user instructs the agent to execute, and mark it complete only when its acceptance criteria are satisfied.
 
 ## Plan file contents
 
@@ -152,7 +118,7 @@ Each plan file is a bounded brief for one CLI outcome. Together with the plan's 
 | Testing design, deterministic boundary | `testing.md`; each plan file lists its targets and tables. |
 | Native and E2E evidence | Each plan file, with Mac checks and Linux checks named separately. |
 | Observability | Each plan file. |
-| Prototype and signoff | Definition and recorded answers in `index.md`; each plan file names what the robust stage must verify beyond it. |
+| Signoff and authorization | Recorded answers and signoff in `index.md`, plus the plan file the user instructs the agent to execute. |
 | Ordered implementation steps | Each plan file. |
 | Acceptance and budgets | Each plan file; plan-wide budgets in `index.md`. |
 | Decisions and status | `index.md`. |

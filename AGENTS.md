@@ -10,7 +10,6 @@
 - Reuse Pi through JSONL RPC with a Go adapter. Pi keeps its supported runtime. Route model traffic through trusted inference services to OpenRouter. fx is an alternative that must pass the same adapter contracts.
 - Browser support, subagents, and eBPF tracking remain extensions below the roadmap's core boundary.
 - The agent platform is currently planning and documentation. Its roadmap commands and suites are proposed; `tools/kb` is a copied upstream implementation, not an installed local tool.
-- `prototypes/` holds standalone reference prototypes agreed with the user to judge an approach. They are not platform code, and none exists yet.
 
 ## Read first
 
@@ -20,16 +19,13 @@
 4. Follow scoped `AGENTS.md` files in the directories being changed.
 5. Read the project [update-knowledge-store skill](.agents/skills/update-knowledge-store/SKILL.md) at session start and follow the knowledge workflow below throughout the task.
 6. Before starting a roadmap slice, follow [docs/slice-planning.md](docs/slice-planning.md) and [docs/plans/AGENTS.md](docs/plans/AGENTS.md). A roadmap bullet is direction, not an implementation brief.
-7. Before proposing, building, or changing a prototype, read [prototypes/AGENTS.md](prototypes/AGENTS.md).
 
 ## Plan slices before implementation
 
-- Plan in passes, each agreed with the user before the next: first the architecture with technical diagrams, discussed back and forth; then the 1..n plan files; then a prototype pass to agree whether a prototype is needed and what kind. When asked to plan, do the architecture pass and stop for discussion.
+- Plan in passes, each agreed with the user before the next: first the architecture with technical diagrams, discussed back and forth; then the 1..n plan files with testing, acceptance criteria, and recorded signoff. When asked to plan, do the architecture pass and stop for discussion.
 - Write a bounded plan folder under `docs/plans/` and add its index to the docs index before implementing the slice. Each plan is a folder of one or more plan files; its `index.md` states their order and which may run concurrently, `architecture.md` shows before and after, and `testing.md` leads with the testing approach. Distinguish open decisions from settled contracts.
-- In the prototype pass, after the plan files exist and before building anything, propose whether the work needs one prototype for the whole plan, one per plan file, several working together, or none because the change is scoped enough, and what each would be. Build only what the user agrees to, in standalone folders under `prototypes/` using Go or Deno, with SQLite unless the question is about the production store. After signoff, build the robust version and keep prototypes as reference.
-- Do not create prototypes, scaffolds, or shared tooling ahead of that discussion. Propose generalizing prototype tooling only after real prototypes show what repeats.
 - Plan one working CLI outcome at a time, including necessary prerequisites, owned invariants, testing boundaries, observable events, acceptance evidence, and resource budgets.
-- Treat a request to plan as documentation work. Do not begin robust implementation merely because a plan exists, a prototype runs, or the user asks whether the project is ready; wait for recorded signoff and an instruction to implement that plan file.
+- Treat a request to plan as documentation work. Do not begin implementation merely because a plan exists or the user asks whether the project is ready; wait for recorded signoff and an instruction to implement that plan file.
 - Implement against the agreed slice plan once authorized. Update it when evidence changes scope, and report departures rather than silently expanding into later roadmap work.
 
 ## Knowledge workflow

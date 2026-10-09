@@ -5,8 +5,7 @@ The platform is currently in the planning stage; roadmap commands and modules de
 
 - [Roadmap](roadmap.md) - architecture, ordered vertical slices, CLI outcomes, tests, analytics, and optional extensions.
 - [Slice planning](slice-planning.md) - the planning workflow and required brief before implementing each slice.
-- [Plans guide](plans/AGENTS.md) - order of work (architecture pass, plan files, prototype pass), plan-folder layout, ordering and concurrency index, before/after architecture, testing emphasis, and the protocol for defining and agreeing a prototype before signoff and robust work.
-- [Prototypes guide](../prototypes/AGENTS.md) - rules for agreed, standalone reference prototypes and for proposing shared tooling later.
+- [Plans guide](plans/AGENTS.md) - architecture and plan-file passes, plan-folder layout, ordering and concurrency index, before/after architecture, testing emphasis, signoff, and authorized implementation.
 - [Testing](testing.md) - deterministic suite design, native fuzzing, MC/DC evidence, test file conventions, and verification boundaries.
 - [Coding style](coding-style.md) - custom Go code, Linux reuse, explicit contracts, and explanatory test and analytics comments.
 - [Docs agent guide](AGENTS.md) - instructions for maintaining this folder and the roadmap.

@@ -10,7 +10,6 @@
 - Keep the roadmap in [roadmap.md](roadmap.md). It describes ordered vertical slices and the extension boundary.
 - Keep implementation and verification conventions in [testing.md](testing.md) and [coding-style.md](coding-style.md).
 - Follow [slice-planning.md](slice-planning.md) and [plans/AGENTS.md](plans/AGENTS.md) to turn each roadmap slice into a plan folder under `plans/` before code. Add each plan's index to the docs index and keep unresolved decisions visible.
-- Prototype code lives in the top-level `prototypes/` folder under [its own guide](../prototypes/AGENTS.md), not in `docs/`.
 - Keep the knowledge-tool choice, copy provenance, repo-scoped invocation, and shared project skill paths in [knowledge-base.md](knowledge-base.md). The store lives in `knowledge/` and follows its own agent contract.
 
 ## Maintain structure
